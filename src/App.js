@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { API_KEY } from "./constants/constants";
-import { Button, Flex, Form, Input } from "antd";
+import { Button, Flex, Form, Input, notification } from "antd";
+
+import winsound from "./core/sounds/win.wav"
+import losesound from "./core/sounds/lose.wav"
+
 
 import "./App.css";
 import "./core/index.css";
@@ -42,6 +46,7 @@ function App() {
   const [count, setCount] = useState(0);
   const [mycity, setMycity] = useState(cities[gamenums[count]]);
   const [temp, setTemp] = useState(0);
+const [results, setResults] = useState([])
 
   useEffect(() => {
     try{
@@ -49,48 +54,93 @@ function App() {
     fetch(url)
       .then((resp) => resp.json())
       .then((data) => {
-        setTemp(Math.floor(data.main.temp - 273.15));
+        setTemp(Math.floor(data.main?.temp - 273.15));
       });
     }catch(e){
       console.log(e)
     }
   }, [mycity]);
 
+
+const winaudio = new Audio(winsound)
+const loseaudio = new Audio(losesound)
+
+
+
   const handleInput = async (value) => {
     const newCount = count + 1;
-
-    //////// fix this bag part /////
-    if (newCount === 6 ){
-     setMycity("Yerevan")
-      return
+  
+    if (newCount === 6) {
+      // Calculate the true/false counts
+      let countResults = results.reduce(
+        (acc, value) => {
+          if (value) {
+            acc.trueCount++;
+          } else {
+            acc.falseCount++;
+          }
+          return acc;
+        },
+        { trueCount: 0, falseCount: 0 }
+      );
+  
+      console.log("True Count:", countResults.trueCount);
+      
+      // Show notification based on the results
+      if (countResults.trueCount >= 4) {
+        notification.success({
+          message: "Congratulations You win",
+        });
+        winaudio.play()
+      } else {
+        notification.error({
+          message: "Sorry You lose. Try Again",
+        });
+        loseaudio.play()
+      }
+      
+      return; 
     }
-
-    setCount(newCount);
-    setMycity(cities[gamenums[newCount]]);
-
+  
     const { search } = value;
-
-    form.resetFields();
-
-    console.log(search, ">>>>");
-    console.log(mycity, ">>>>");
-    console.log(temp, ">>>>");
-   console.log( handleCheck(search, temp) ? "win" : "lose", "XXXXXXX")
+  
+    let nottext = Number(search)
+    // Check if search input is valid
+    if (search === undefined || search.trim() === "" || isNaN(nottext) ) {
+      alert("Write Temp value, It must be a number");
+      form.resetFields()
+      return;
+    }
+  
+    
+    setResults((prev) => {
+      const newRes = handleCheck(search, temp);
+      if(newRes){
+        winaudio.play()
+      }else{
+        loseaudio.play()
+      }
+      return [...prev, newRes];
+    });
+  
+   
+    setTimeout(() => {
+      setCount(newCount);
+      setMycity(cities[gamenums[newCount]]);
+      form.resetFields()
+    }, 0); 
   };
+  
 
 
   const handleCheck = (search, temp)=>{
     let min = temp-4
     let max = temp + 4
 
-    if(search >= min && search <= max){
-      return true
-    }else{
-      return false
-    }
+    return search >= min && search <= max
   }
 
-
+console.log(results)
 
   return (
     <div className="App">
@@ -100,10 +150,10 @@ function App() {
         <span>Game created by Khach</span>
 
         <Flex vertical gap="small">
-          <h2>{mycity}</h2>
+          <h2>{mycity || "click button to know result"}</h2>
           <Form layout="vertical" form={form} onFinish={handleInput}>
             <Form.Item name="search">
-              <Input placeholder="enter a city name" name="search" />
+              <Input placeholder="Guess the city Tempriture" name="search" />
             </Form.Item>
 
             <Button htmlType="submit" className="button" type="primary">
@@ -112,13 +162,23 @@ function App() {
           </Form>
         </Flex>
 
-        <Flex layout="horizonatal" gap="small">
-          <div className="round"></div>
-          <div className="round"></div>
-          <div className="round"></div>
-          <div className="round"></div>
-          <div className="round"></div>
+<div className="rounds">
+<Flex  layout="horizonatal" gap="small">
+         {
+          results.map((item, i)=>{
+            
+            return(
+              <div
+              style={{ backgroundColor: item ? "green" : "red" }}
+               key={i}  
+              className="round"></div>
+            )
+          })
+         }
         </Flex>
+</div>
+       
+
       </div>
     </div>
   );

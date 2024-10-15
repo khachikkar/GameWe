@@ -31,3 +31,9 @@
     background-color: aliceblue;
     border-radius: var(--border-radius);
 }
+
+.rounds{
+    /* border: 1px solid red; */
+    height: 50px;
+   
+}
