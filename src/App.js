@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { API_KEY } from "./constants/constants";
-import { Button, Flex, Form, Input, notification, Tooltip } from "antd";
+import { Button, Flex, Form, Input, notification } from "antd";
 
 import winsound from "./core/sounds/win.wav"
 import losesound from "./core/sounds/lose.wav"
