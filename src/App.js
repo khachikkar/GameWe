@@ -4,6 +4,7 @@ import { Button, Flex, Form, Input, notification } from "antd";
 
 import winsound from "./core/sounds/win.wav"
 import losesound from "./core/sounds/lose.wav"
+import gametheme from "./core/sounds/gametheme.mp3"
 import img from "./core/img/img.png"
 import logo from "./core/img/logo.png"
 
@@ -15,6 +16,9 @@ let mycities = new Set();
 while (mycities.size < 5) {
   mycities.add(Math.floor(Math.random() * 20));
 }
+
+const gamethemesound = new Audio(gametheme)
+gamethemesound.play()
 
 function App() {
   const [form] = Form.useForm();
