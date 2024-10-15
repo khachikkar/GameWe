@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { API_KEY } from "./constants/constants";
-import { Button, Flex, Form, Input, notification } from "antd";
+import { Button, Flex, Form, Input, notification, Tooltip } from "antd";
 
 import winsound from "./core/sounds/win.wav"
 import losesound from "./core/sounds/lose.wav"
+import img from "./core/img/img.png"
+import logo from "./core/img/logo.png"
 
 
 import "./App.css";
@@ -47,7 +49,6 @@ function App() {
   const [mycity, setMycity] = useState(cities[gamenums[count]]);
   const [temp, setTemp] = useState(0);
 const [results, setResults] = useState([])
-
   useEffect(() => {
     try{
     const url = `https://api.openweathermap.org/data/2.5/weather?q=${mycity}&appid=${API_KEY}`;
@@ -103,7 +104,6 @@ const loseaudio = new Audio(losesound)
     }
   
     const { search } = value;
-  
     let nottext = Number(search)
     // Check if search input is valid
     if (search === undefined || search.trim() === "" || isNaN(nottext) ) {
@@ -144,15 +144,21 @@ console.log(results)
 
   return (
     <div className="App">
-      <h1>GameWe</h1>
+ 
+      
+        <img className="logo" src={logo} />
 
       <div className="container">
-        <span>Game created by Khach</span>
-
+        <span className="he">Game created by Khach</span>
+      <img src={img} />
         <Flex vertical gap="small">
           <h2>{mycity || "click button to know result"}</h2>
           <Form layout="vertical" form={form} onFinish={handleInput}>
-            <Form.Item name="search">
+            <Form.Item
+            label="Guess the Tempriture"
+             name="search"
+             tooltip="In this game, you will test your knowledge of global weather by guessing the temperatures of five randomly selected cities. The objective is simple: for each city, you'll input your temperature guess. The game will compare your input against the real temperature (within a certain range), and you'll receive immediate feedback for each guess."
+             >
               <Input placeholder="Guess the city Tempriture" name="search" />
             </Form.Item>
 
@@ -169,9 +175,11 @@ console.log(results)
             
             return(
               <div
-              style={{ backgroundColor: item ? "green" : "red" }}
-               key={i}  
-              className="round"></div>
+              style={{ backgroundColor: item ? "#97DB4F" : "#DB162F" }}
+              key={i}  
+              className="round">
+             {item ? "R" : "W"}
+              </div>
             )
           })
          }
