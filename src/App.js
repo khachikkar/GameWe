@@ -146,11 +146,11 @@ console.log(results)
     <div className="App">
  
       
-        <img className="logo" src={logo} />
+        <img className="logo" src={logo} alt="logo" />
 
       <div className="container">
         <span className="he">Game created by Khach</span>
-      <img src={img} />
+      <img src={img} alt="img"/>
         <Flex vertical gap="small">
           <h2>{mycity || "click button to know result"}</h2>
           <Form layout="vertical" form={form} onFinish={handleInput}>
