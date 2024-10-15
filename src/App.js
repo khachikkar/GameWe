@@ -91,10 +91,11 @@ const handleInput = async (value)=>{
   return (
     <div className="App">
 
+<h1>GameWe</h1>
 
     <div className='container'>
      
-
+<span>Game created by Khach</span>
 
 <Flex vertical gap="small">
 <h2>{mycity}</h2>
